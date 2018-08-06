@@ -34,6 +34,15 @@ QString Tagger::nativeText() const
     return m_nativeText;
 }
 
+void Tagger::dropData()
+{
+}
+
+bool Tagger::loadingInfo() const
+{
+    return true;
+}
+
 K_EXPORT_PLASMA_APPLET_WITH_JSON(tagger, Tagger, "metadata.json")
 
 #include "tagger.moc"

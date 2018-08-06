@@ -22,18 +22,50 @@ import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.components 2.0 as PlasmaComponents
+import org.kde.plasma.extras 2.0 as PlasmaX
 
 Item {
-    Plasmoid.fullRepresentation: ColumnLayout {
-        anchors.fill: parent
+    Plasmoid.hideOnWindowDeactivate: false
+
+    Plasmoid.compactRepresentation: //PlasmaCore.IconItem {
         Image {
-            Layout.fillHeight: true
-            Layout.fillWidth: true
-            fillMode: Image.PreserveAspectFit
-            source: "../images/pairs.svgz"
+        // source: "folder-bookmark"
+        source: "../images/icon.svgz"
+
+        MouseArea {
+            anchors.fill: parent
+
+            onClicked: plasmoid.expanded = !plasmoid.expanded
         }
-        PlasmaComponents.Label {
-            Layout.alignment: Qt.AlignCenter
+
+        DropArea {
+            anchors.fill: parent
+
+            onEntered: {
+                console.log("Drag entered");
+            }
+
+            onDropped: {
+                drop.acceptProposedAction();
+                console.log("Formats: " + drop.formats);
+
+                drop.formats.forEach(function (item) {
+                    console.log(item + " " + drop.getDataAsString(item));
+                });
+                //
+                // drop.formats.forEach(function (item) {
+                //     console.log(item + " " + drop.getDataAsString(item)
+                // });
+            }
+        }
+    }
+
+    Layout.maximumWidth: 300
+
+    Plasmoid.fullRepresentation: ColumnLayout {
+        Layout.maximumWidth: 300
+
+        PlasmaX.Title {
             text: plasmoid.nativeInterface.nativeText
         }
     }

@@ -25,13 +25,22 @@
 class Tagger : public Plasma::Applet
 {
     Q_OBJECT
+
+    Q_PROPERTY(bool loadingInfo READ loadingInfo NOTIFY loadingInfoChanged)
     Q_PROPERTY(QString nativeText READ nativeText CONSTANT)
 
 public:
-    Tagger( QObject *parent, const QVariantList &args );
+    Tagger(QObject *parent, const QVariantList &args);
     ~Tagger();
 
     QString nativeText() const;
+    bool loadingInfo() const;
+
+public Q_SLOTS:
+    void dropData();
+
+Q_SIGNALS:
+    void loadingInfoChanged(bool value);
 
 private:
     QString m_nativeText;
