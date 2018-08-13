@@ -1,0 +1,27 @@
+{
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "%{EMAIL}",
+                "Name": "%{AUTHOR}"
+            }
+        ],
+        "Category": "Utilities",
+        "Dependencies": [
+        ],
+        "Description": "Note and file organization made easy",
+        "EnabledByDefault": true,
+        "Icon": "applications-system",
+        "Id": "org.kde.plasma.crisp",
+        "License": "GPL",
+        "Name": "Plasma Crisp",
+        "Name[x-test]": "xxPlasma Crispxx",
+        "ServiceTypes": [
+            "Plasma/Applet"
+        ],
+        "Version": "1.0",
+        "Website": "http://plasma.kde.org/"
+    },
+    "X-Plasma-API": "declarativeappletscript",
+    "X-Plasma-MainScript": "ui/main.qml"
+}
