@@ -28,10 +28,6 @@ import org.kde.plasma.components 2.0 as PlasmaComponents
 import QtQuick.Controls 1.0
 import QtQuick.Controls.Styles 1.1 as QtQuickControlStyle
 
-import org.kde.kquickcontrolsaddons 2.0 as KQuickControlsAddons
-
-import QtGraphicalEffects 1.0 as Effects
-
 
 Item {
     id: root
@@ -45,7 +41,6 @@ Item {
 
         anchors.fill: parent
 
-
         Layout.maximumWidth: 300
         Layout.maximumHeight: 300
 
@@ -54,48 +49,8 @@ Item {
         clip: true
     }
 
-    Item {
+    NoteHeaderPreview {
         anchors.fill: itemThumbnail
-
-        KQuickControlsAddons.QPixmapItem {
-            id: itemPreviewBlur
-
-            anchors.centerIn: parent
-
-            width: parent.width
-            height: parent.height
-
-            fillMode: KQuickControlsAddons.QPixmapItem.PreserveAspectCrop
-
-            pixmap: plasmoid.nativeInterface.preview
-        }
-
-        Effects.FastBlur {
-            anchors.fill: itemPreviewBlur
-            source: itemPreviewBlur
-            radius: 32
-        }
-
-        Rectangle {
-            color: "black"
-            opacity: 0.5
-            anchors.fill: parent
-        }
-
-        KQuickControlsAddons.QPixmapItem {
-            id: itemPreview
-
-            anchors {
-                centerIn: parent
-            }
-
-            width: itemThumbnail.width
-            height: itemThumbnail.height
-
-            fillMode: KQuickControlsAddons.QPixmapItem.PreserveAspectFit
-
-            pixmap: plasmoid.nativeInterface.preview
-        }
     }
 
     Rectangle {

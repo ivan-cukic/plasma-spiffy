@@ -38,23 +38,16 @@
 #include <KFileMetaData/UserMetaData>
 #include <KLocalizedString>
 
-#include <KIO/PreviewJob>
-
 #include <iterator>
 #include <algorithm>
 
-#include "editorhighlight.h"
-#include "utils/mimedataiterator.h"
+#include "EditorHighlight.h"
+#include "AttachmentModel.h"
+#include "utils/MimeDataIterator.h"
 
 class Crisp::Private {
 public:
     Crisp* const q;
-    struct AttachmentData {
-        QUrl url;
-        QString title;
-        QString icon;
-        QPixmap preview;
-    };
 
     struct NoteData {
         QString title;
@@ -63,137 +56,6 @@ public:
         QVector<AttachmentData> attachments;
     };
 
-    class AttachmentModel: public QAbstractListModel {
-    public:
-        enum AttachmentModelRoles {
-            AttachmentTitle = Qt::UserRole,
-            AttachmentIcon,
-            AttachmentPreview,
-            AttachmentUrl
-        };
-
-        AttachmentModel(Private* d)
-            : d(d)
-        {
-        }
-
-        ~AttachmentModel()
-        {
-        }
-
-        QHash<int, QByteArray> roleNames() const override
-        {
-            return {
-                {AttachmentTitle,   "title"},
-                {AttachmentIcon,    "icon"},
-                {AttachmentPreview, "preview"},
-                {AttachmentUrl,     "url"}
-            };
-        }
-
-        int rowCount(const QModelIndex& index) const override
-        {
-            if (index.isValid()) return 0;
-
-            return m_attachments.count();
-        }
-
-        QVariant data(const QModelIndex& index, int role) const override
-        {
-            const auto row = index.row();
-
-            if (row < 0 || row >= m_attachments.count()) return {};
-
-            const auto& attachment = m_attachments[row];
-
-            return role == Qt::DisplayRole    ? attachment.title
-                 : role == Qt::DecorationRole ? attachment.icon
-                 : role == AttachmentTitle    ? attachment.title
-                 : role == AttachmentIcon     ? attachment.icon
-                 : role == AttachmentPreview  ? attachment.preview
-                 : role == AttachmentUrl      ? attachment.url
-                 : QVariant();
-
-        }
-
-        auto findItem(const QUrl &url) const
-        {
-            return std::find_if(
-                    std::cbegin(m_attachments),
-                    std::cend(m_attachments),
-                    [&] (const auto &item) {
-                        return item.url == url;
-                    });
-        }
-
-        void removePreviewJob(const QUrl &url)
-        {
-            previewJobs.removeAll(static_cast<KIO::PreviewJob*>(sender()));
-        }
-
-        void registerPreviewResult(const QUrl& url, const QPixmap& pixmap)
-        {
-            removePreviewJob(url);
-
-            auto itemToUpdate = findItem(url);
-            if (itemToUpdate == std::cend(m_attachments)) {
-                return;
-            }
-
-            auto rowToUpdate = std::distance(std::cbegin(m_attachments), itemToUpdate);
-            auto indexToUpdate = index(rowToUpdate);
-
-            m_attachments[rowToUpdate].preview = pixmap;
-            dataChanged(indexToUpdate, indexToUpdate, {AttachmentPreview});
-
-            if (d->preview.isNull()) {
-                d->q->setPreview(pixmap);
-            }
-        }
-
-        void addItem(const AttachmentData& attachment)
-        {
-            if (findItem(attachment.url) != std::cend(m_attachments)) {
-                return;
-            }
-
-            beginInsertRows(QModelIndex(), m_attachments.count(),
-                                           m_attachments.count());
-
-            m_attachments << attachment;
-
-            auto job = KIO::filePreview({attachment.url}, 400);
-            connect(job, &KIO::PreviewJob::gotPreview,
-                    this, [this] (const KFileItem &file, const QPixmap &pixmap) {
-                        registerPreviewResult(file.mostLocalUrl(), pixmap);
-                    });
-            connect(job, &KIO::PreviewJob::failed,
-                    this, [this] (const KFileItem &file) {
-                        removePreviewJob(file.mostLocalUrl());
-                    });
-
-            endInsertRows();
-        }
-
-        void removeItem(const QString &url)
-        {
-            auto itemToRemove = findItem(url);
-            if (itemToRemove == std::cend(m_attachments)) {
-                return;
-            }
-
-            auto rowToRemove = std::distance(std::cbegin(m_attachments), itemToRemove);
-
-            beginRemoveRows(QModelIndex(), rowToRemove, rowToRemove);
-            m_attachments.remove(rowToRemove);
-            endRemoveRows();
-        }
-
-    private:
-        Private *d;
-        QVector<AttachmentData> m_attachments;
-        QList<KIO::PreviewJob*> previewJobs;
-    };
 
     QString title;
     QString description;
@@ -205,7 +67,6 @@ public:
 
     Private(Crisp* parent)
         : q(parent)
-        , attachmentsModel(this)
     {
     }
 
@@ -421,7 +282,6 @@ void Crisp::removeAttachment(const QString &url)
     qDebug() << "Url to remove: " << url;
     d->attachmentsModel.removeItem(url);
 }
-
 
 
 K_EXPORT_PLASMA_APPLET_WITH_JSON(crisp, Crisp, "metadata.json")

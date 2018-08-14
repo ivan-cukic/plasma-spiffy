@@ -19,7 +19,7 @@
  *   If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "editorhighlight.h"
+#include "EditorHighlight.h"
 
 #include <QRegExp>
 #include <QDebug>

@@ -94,8 +94,7 @@ Item {
             id: noteHeader
 
             anchors {
-                // top: parent.top
-                top: buttonsA.bottom
+                top: parent.top
                 left: parent.left
                 right: parent.right
             }
@@ -141,11 +140,6 @@ Item {
                 frame: Rectangle {
                     color: Qt.rgba(0, 0, 0, 0.2)
                 }
-
-                scrollBarBackground: svs.scrollBarBackground
-                handle: svs.handle
-                incrementControl: svs.incrementControl
-                decrementControl: svs.decrementControl
             }
         }
 

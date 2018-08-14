@@ -3,7 +3,8 @@ add_definitions(-DTRANSLATION_DOMAIN=\"plasma_applet_org.kde.plasma.crisp\")
 
 set(crisp_SRCS
     crisp.cpp
-    editorhighlight.cpp
+    EditorHighlight.cpp
+    AttachmentModel.cpp
 )
 
 add_library(plasma_applet_crisp MODULE ${crisp_SRCS})
