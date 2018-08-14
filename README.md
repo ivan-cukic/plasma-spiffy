@@ -2,7 +2,9 @@
 
 Plasma Spiffy is an applet for note creation.
 
-It is under heavy development.
+![screenshot](https://raw.githubusercontent.com/ivan-cukic/plasma-spiffy/master/spiffy.png)
+
+It is under **heavy** development.
 
 ## GitHub
 
@@ -11,6 +13,7 @@ The reason why Spiffy is on GitHub is simply because I consider it to be a toy a
 and not something that should bear the responsibility that comes with being a KDE project.
 
 If Spiffy matures and proves to be useful, I'll move it to the KDE infrastructure.
+
 
 
 ## Build instructions
